@@ -1,0 +1,28 @@
+{"name":"all",
+"children":
+[
+  {"name":"one",
+  "children":[
+  {"name":"one1","size":100},
+  {"name":"one2","size":200}]},
+
+  {"name":"three",
+  "children":[
+  {"name":"three1","size":100},
+  {"name":"three2","size":200}]},
+
+  {"name":"four",
+  "children":[
+  {"name":"four1","size":100},
+  {"name":"four2","size":200}]},
+
+  {"name":"five",
+  "children":[
+  {"name":"five1","size":100},
+  {"name":"five2","size":200}]},
+
+  {"name":"two",
+  "children":[
+  {"name":"two1","size":500},
+  {"name":"two2","size":1200}]}
+]}
