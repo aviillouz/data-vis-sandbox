@@ -17,6 +17,7 @@
   {"name":"four2","size":200}]},
 
   {"name":"five",
+   "size": 700,
   "children":[
   {"name":"five1","size":100},
   {"name":"five2","size":200}]},
