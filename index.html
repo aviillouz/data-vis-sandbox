@@ -11,14 +11,16 @@ path {
   <script src="//d3js.org/d3.v3.min.js"></script>
   <script>
   var width = 960,
-  height = 700,
+  height = 960,
   radius = (Math.min(width, height) / 2) - 10;
 
   var formatNumber = d3.format(",d");
 
+  //ההיקף
   var x = d3.scale.linear()
   .range([0, 2 * Math.PI]);
 
+  //העומק
   var y = d3.scale.sqrt()
   .range([0, radius]);
 
@@ -26,7 +28,7 @@ path {
 
   var partition = d3.layout.partition()
   .value(function(d) {
-    return d.size;
+    return d.amount;
   });
 
   var arc = d3.svg.arc()
@@ -49,7 +51,7 @@ path {
   .append("g")
   .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
 
-  d3.json("my.json", function(error, root) {
+  d3.json("get_budget_tree.json", function(error, root) {
     if (error) throw error;
 
     svg.selectAll("path")
