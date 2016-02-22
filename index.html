@@ -4,6 +4,9 @@
 path {
   stroke: #fff;
 }
+path:hover{
+  opacity: 0.8;
+}
 </style>
 
 <body>
@@ -64,7 +67,7 @@ path {
     .on("click", click)
     .append("title")
     .text(function(d) {
-      return d.name + "\n" + formatNumber(d.value);
+      return d.name + "\n" + formatNumber(d.value) + "\nקוד: " + d.code;
     });
   });
 
