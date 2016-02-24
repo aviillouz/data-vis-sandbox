@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-body{
+h1{
   font-family: 'Noto Sans','Noto Sans Hebrew', serif;
+  font-size: 18px;
+  text-align: center;
 }
 path {
   stroke: #fff;
@@ -13,7 +15,7 @@ path:hover{
 </style>
 
 <body>
-  <h1>Trying Sunburst</h1>
+  <h1>Localbudget Sunburst Sandbox</h1>
   <script src="//d3js.org/d3.v3.js"></script>
   <script>
   var width = 960,
@@ -69,7 +71,6 @@ path:hover{
       return color((d.children ? d : d.parent).name);
     })
     .on("click", click)
-    .on("mouseover",hover)
     .append("title")
     .text(function(d) {
       return d.name + "\n" + formatNumber(d.value) + "\nקוד: " + d.code;
@@ -77,6 +78,20 @@ path:hover{
   });
 
   function click(d) {
+
+    d3.select("h1").text
+    (
+      function () {
+        node = d;
+        var text = node.muni;
+        while (node.name !== 'root'){
+          text = text + ' : ' + node.name;
+          node = node.parent;
+        }
+        return text
+      }
+    );
+
     svg.transition()
     .duration(1500)
     .tween("scale", function() {
@@ -94,19 +109,10 @@ path:hover{
         return arc(d);
       };
     });
+
+
   }
 
-  function hover(d) {
-    d3.select("h1").text(
-      function () {
-        var text = d.muni;
-        while (d.name !== 'root'){
-          text = text + ' : ' + d.name;
-          d = d.parent;
-        }
-        return text;
-    })
-  }
   d3.select(self.frameElement).style("height", height + "px");
   </script>
 </body>
