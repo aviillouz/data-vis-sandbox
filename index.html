@@ -5,13 +5,44 @@ body{
   font-family: 'Noto Sans','Noto Sans Hebrew', serif;
   font-size: 18px;
   text-align: center;
+
 }
 path {
-  stroke: #fff;
+  stroke: rgb(255, 255, 255);
 }
 path:hover{
-  opacity: 0.7;
+  opacity: 0.5;
 }
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
 </style>
 
 <body>
@@ -19,7 +50,13 @@ path:hover{
   <h2></h2>
   <h3></h3>
   <script src="//d3js.org/d3.v3.js"></script>
+  <script src=
+  "http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js">
+  </script>
+
   <script>
+
+
   var width = 960,
   height = 960,
   radius = (Math.min(width, height) / 2) - 10;
@@ -35,8 +72,11 @@ path:hover{
   .range([0, radius]);
 
   var color = d3.scale.category20c();
-  var hue = d3.scale.category20c();
-
+  var color = d3.scale.ordinal().range(
+    ['#50514f','#f25f5c','#ffe066','#247ba0','#70c1b3']);
+    (['rgb(228,26,28)','rgb(55,126,184)','rgb(77,175,74)',
+    'rgb(152,78,163)','rgb(255,127,0)','rgb(255,255,51)',
+    'rgb(166,86,40)','rgb(247,129,191)','rgb(153,153,153)'])
   var partition = d3.layout.partition()
   .value(function(d) {
     return d.amount;
@@ -56,13 +96,23 @@ path:hover{
     return Math.max(0, y(d.y + d.dy));
   });
 
+  var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>" + d.name + "</strong> \
+            <span style='color:red'>" + d.amount + "</span> <br>" +
+            "<strong>" + "סעיף" + "</strong> \
+            <span style='color:orange'>" + (d.code ? d.code : 'כל הסעיפים') + "</span>";
+  })
+
   var svg = d3.select("body").append("svg")
   .attr("width", width)
   .attr("height", height)
   .append("g")
   .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
 
-
+  svg.call(tip);
   d3.json("get_budget_tree.json", function(error, root) {
     if (error) throw error;
 
@@ -71,16 +121,22 @@ path:hover{
     .enter().append("path")
     .attr("d", arc)
     .style("fill", function fill(d) {
-      return color(getDepthOneAncestor(d).code);
+      //return d3.rgb(d.depth * (256/4),0,(d.code ? d.code[0] : 0) * 256/9);
+      return (d.depth ? color(getDepthOneAncestor(d).code) : "wheat");
     })
-    .style("opacity", function opacity(d) {
-      return 1- d.depth/10; 
-    })
+    //.style("opacity", function opacity(d) {
+      // return 1 - d.depth/10;
+    //})
+    //.style("opacity:hover",0.5)
     .on("click", click)
-    .append("title")
-    .text(function(d) {
-      return d.name + "\n" + formatNumber(d.value) + "\nקוד: " + d.code;
-    });
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide)
+
+    //remove native tooltip
+    // .append("title")
+    // .text(function(d) {
+    //   return d.name + "\n" + formatNumber(d.value) + "\nקוד: " + d.code;
+    // });
   });
 
   function getDepthOneAncestor(node) {
