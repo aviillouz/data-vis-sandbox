@@ -100,8 +100,8 @@ path:hover{
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-    return "<strong>" + d.name + "</strong> \
-            <span style='color:red'>" + d.amount + "</span> <br>" +
+    return "<strong>" + (d.name == 'root' ? 'חורה' : d.name) + "</strong> \
+            <span style='color:red'>" + formatNumber(d.amount) + ' ש"ח' + "</span> <br>" +
             "<strong>" + "סעיף" + "</strong> \
             <span style='color:orange'>" + (d.code ? d.code : 'כל הסעיפים') + "</span>";
   })
