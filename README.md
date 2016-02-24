@@ -1,3 +1,2 @@
 # data-vis-sandbox
-This is the crazy branch
-nothing new today
+Visualize budget data with d3 layout partition
