@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
+body{
+  font-family: 'Noto Sans','Noto Sans Hebrew', serif;
+}
 path {
   stroke: #fff;
 }
@@ -11,7 +14,7 @@ path:hover{
 
 <body>
   <h1>Trying Sunburst</h1>
-  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/d3.v3.js"></script>
   <script>
   var width = 960,
   height = 960,
@@ -54,6 +57,7 @@ path:hover{
   .append("g")
   .attr("transform", "translate(" + width / 2 + "," + (height / 2) + ")");
 
+
   d3.json("get_budget_tree.json", function(error, root) {
     if (error) throw error;
 
@@ -65,6 +69,7 @@ path:hover{
       return color((d.children ? d : d.parent).name);
     })
     .on("click", click)
+    .on("mouseover",hover)
     .append("title")
     .text(function(d) {
       return d.name + "\n" + formatNumber(d.value) + "\nקוד: " + d.code;
@@ -73,7 +78,7 @@ path:hover{
 
   function click(d) {
     svg.transition()
-    .duration(750)
+    .duration(1500)
     .tween("scale", function() {
       var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
       yd = d3.interpolate(y.domain(), [d.y, 1]),
@@ -91,6 +96,17 @@ path:hover{
     });
   }
 
+  function hover(d) {
+    d3.select("h1").text(
+      function () {
+        var text = d.muni;
+        while (d.name !== 'root'){
+          text = text + ' : ' + d.name;
+          d = d.parent;
+        }
+        return text;
+    })
+  }
   d3.select(self.frameElement).style("height", height + "px");
   </script>
 </body>
