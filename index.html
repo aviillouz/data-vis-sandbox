@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <style>
-h1{
+body{
   font-family: 'Noto Sans','Noto Sans Hebrew', serif;
   font-size: 18px;
   text-align: center;
@@ -10,12 +10,14 @@ path {
   stroke: #fff;
 }
 path:hover{
-  opacity: 0.8;
+  opacity: 0.7;
 }
 </style>
 
 <body>
   <h1>Localbudget Sunburst Sandbox</h1>
+  <h2></h2>
+  <h3></h3>
   <script src="//d3js.org/d3.v3.js"></script>
   <script>
   var width = 960,
@@ -33,6 +35,7 @@ path:hover{
   .range([0, radius]);
 
   var color = d3.scale.category20c();
+  var hue = d3.scale.category20c();
 
   var partition = d3.layout.partition()
   .value(function(d) {
@@ -67,8 +70,11 @@ path:hover{
     .data(partition.nodes(root))
     .enter().append("path")
     .attr("d", arc)
-    .style("fill", function(d) {
-      return color((d.children ? d : d.parent).name);
+    .style("fill", function fill(d) {
+      return color(getDepthOneAncestor(d).code);
+    })
+    .style("opacity", function opacity(d) {
+      return 1- d.depth/10; 
     })
     .on("click", click)
     .append("title")
@@ -77,6 +83,9 @@ path:hover{
     });
   });
 
+  function getDepthOneAncestor(node) {
+    return node.depth > 1 ? getDepthOneAncestor(node.parent) : node;
+}
   function click(d) {
 
     d3.select("h1").text
@@ -92,8 +101,11 @@ path:hover{
       }
     );
 
+    d3.select("h2").text('תקציב: ' + formatNumber(d.value) +' ש"ח')
+    d3.select("h3").text('סעיף: ' + (d.code ? d.code : 'כל הסעיפים'))
+
     svg.transition()
-    .duration(1500)
+    .duration(500)
     .tween("scale", function() {
       var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
       yd = d3.interpolate(y.domain(), [d.y, 1]),
